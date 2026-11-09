@@ -1,0 +1,552 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Requisitos NTC 6038</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: escenario a pantalla completa, cada diapositiva entra con un barrido diagonal; barra superior (glosario, tema) y ruta de progreso abajo. */
+:root{
+  --bg:#eef1f6; --ink:#0f1b3d; --mut:#4d5878; --ln:#0f1b3d2e; --card:#ffffff;
+  --p1:#2c4bff; --p2:#f2b705; --p3:#d1198e;
+  --on-p1:#ffffff; --on-p2:#0f1b3d; --on-p3:#ffffff;
+  --display:'Unbounded','Arial Black',system-ui,sans-serif;
+  --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --gx:max(16px,env(safe-area-inset-left,0px));
+  --gr:max(16px,env(safe-area-inset-right,0px));
+}
+:root[data-theme="dark"]{
+  --bg:#0b1230; --ink:#e8ecf8; --mut:#9aa6c7; --ln:#ffffff30; --card:#131c45;
+  --p1:#6f86ff; --p2:#ffd23f; --p3:#ff5cc0;
+  --on-p1:#0b1230; --on-p2:#0b1230; --on-p3:#0b1230;
+  color-scheme:dark;
+}
+@property --t{syntax:'<percentage>';inherits:false;initial-value:0%}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 clamp(15px,1.3vw,18px)/1.5 var(--body);display:flex;flex-direction:column;overflow:hidden}
+h1,h2,h3,p,ul,dl,dd{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--p1);outline-offset:2px}
+
+/* barra superior */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px var(--gr) 10px var(--gx);border-bottom:1px solid var(--ln);flex:none}
+.brand{display:flex;align-items:center;gap:10px;font:700 .8rem/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;min-width:0}
+.brand i{flex:none;width:22px;height:16px;background:var(--p1);clip-path:polygon(25% 0,100% 0,75% 100%,0 100%)}
+.brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tools{display:flex;gap:8px;flex:none}
+.btn{border:1px solid var(--ln);background:var(--card);border-radius:8px;padding:7px 12px;font-weight:600;font-size:.85rem;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--p1)}
+.btn kbd{font:600 .7rem var(--body);border:1px solid var(--ln);border-radius:4px;padding:0 5px;color:var(--mut)}
+.btn.pri{background:var(--p1);color:var(--on-p1);border-color:var(--p1)}
+
+/* escenario */
+.stage{position:relative;flex:1;min-height:0}
+.s{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;background:var(--bg);padding:0 var(--gr) 0 var(--gx)}
+.s.on,.s.out{display:block}
+.s.on{z-index:2}.s.out{z-index:1}
+.s.on.f{animation:wf .8s cubic-bezier(.7,0,.2,1) both;clip-path:polygon(0 0,var(--t) 0,calc(var(--t) - 30%) 100%,0 100%)}
+.s.on.b{animation:wb .8s cubic-bezier(.7,0,.2,1) both;clip-path:polygon(100% 0,calc(100% - var(--t)) 0,calc(100% - var(--t) + 30%) 100%,100% 100%)}
+@keyframes wf{from{--t:0%}to{--t:130%}}
+@keyframes wb{from{--t:0%}to{--t:130%}}
+.s.on .rise{animation:rise .6s .45s cubic-bezier(.2,.7,.2,1) both}
+.s.on .rise:nth-child(2){animation-delay:.52s}.s.on .rise:nth-child(3){animation-delay:.59s}.s.on .rise:nth-child(4){animation-delay:.66s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.in{max-width:1240px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:clamp(14px,2.6vh,30px);padding-block:clamp(18px,3.4vh,44px)}
+
+.eyebrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--mut);font-weight:600}
+.chip{background:var(--p2);color:var(--on-p2);font:700 .78rem var(--body);letter-spacing:.06em;text-transform:uppercase;padding:4px 12px 4px 10px;clip-path:polygon(0 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+h2{font:800 clamp(1.35rem,3.1vw,2.7rem)/1.08 var(--display);text-wrap:balance;letter-spacing:-.01em}
+
+/* tarjetas */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:clamp(14px,1.8vw,24px);display:flex;flex-direction:column;gap:10px;min-width:0}
+.card header{display:flex;align-items:center;gap:12px}
+.n{flex:none;width:38px;height:30px;display:grid;place-items:center;background:var(--c,var(--p1));color:var(--on,var(--on-p1));font:800 .9rem var(--display);clip-path:polygon(18% 0,100% 0,82% 100%,0 100%)}
+h3{font:700 clamp(.98rem,1.25vw,1.2rem)/1.2 var(--body);text-wrap:balance}
+.card ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:7px;font-size:clamp(.86rem,1.08vw,1rem);color:var(--mut);line-height:1.45}
+.card li{padding-left:16px;position:relative}
+.card li::before{content:"";position:absolute;left:0;top:.62em;width:7px;height:7px;background:var(--c,var(--p1));clip-path:polygon(30% 0,100% 0,70% 100%,0 100%)}
+.card li b{color:var(--ink);font-weight:700}
+.c1{--c:var(--p1);--on:var(--on-p1)}.c2{--c:var(--p2);--on:var(--on-p2)}.c3{--c:var(--p3);--on:var(--on-p3)}
+
+/* términos del glosario dentro del texto */
+.g{all:unset;cursor:pointer;color:var(--p1);font-weight:700;border-bottom:2px dotted currentColor}
+.g:hover{background:color-mix(in srgb,var(--p1) 14%,transparent)}
+.g:focus-visible{outline:3px solid var(--p1);outline-offset:2px}
+
+/* portada */
+.cover .in{justify-content:center;gap:clamp(14px,3vh,30px)}
+.bands{position:absolute;inset:0 0 0 auto;width:min(42%,520px);pointer-events:none}
+.bands i{position:absolute;inset:0}
+.bands i:nth-child(1){background:var(--p1);clip-path:polygon(46% 0,100% 0,100% 100%,0 100%)}
+.bands i:nth-child(2){background:var(--p2);clip-path:polygon(70% 0,84% 0,38% 100%,24% 100%)}
+.bands i:nth-child(3){background:var(--p3);clip-path:polygon(88% 0,94% 0,48% 100%,42% 100%)}
+.cover .txt{position:relative;display:flex;flex-direction:column;gap:clamp(14px,3vh,26px);max-width:min(100%,820px)}
+h1{font:800 clamp(2rem,6.2vw,5.2rem)/1.02 var(--display);letter-spacing:-.02em;text-wrap:balance}
+.lead{font-size:clamp(1.05rem,1.8vw,1.5rem);color:var(--mut);max-width:34ch}
+.tags{display:flex;gap:12px;flex-wrap:wrap;position:relative}
+.tag{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px 16px;max-width:260px;min-width:0}
+.tag b{display:block;font-weight:700}.tag span{color:var(--mut);font-size:.88rem}
+.hint{position:relative;color:var(--mut);font-size:.85rem}
+.hint kbd{font:600 .75rem var(--body);border:1px solid var(--ln);border-radius:4px;padding:1px 6px;background:var(--card)}
+
+.w1{--w:var(--p1)}.w2{--w:var(--p2)}.w3{--w:var(--p3)}
+.who{margin:0;font:600 .82rem var(--body);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.who::before{content:"";display:inline-block;width:14px;height:10px;margin-right:8px;background:var(--w,var(--p1));clip-path:polygon(25% 0,100% 0,75% 100%,0 100%)}
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;position:relative}
+.mem{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px 16px;min-width:0}
+.mem b{display:flex;align-items:center;gap:8px;font-weight:700}
+.mem b::before{content:"";flex:none;width:14px;height:10px;background:var(--w);clip-path:polygon(25% 0,100% 0,75% 100%,0 100%)}
+.mem span{display:block;color:var(--mut);font-size:.86rem;margin-top:2px}
+
+/* tabla VOC */
+.tw{overflow-x:auto;border:1px solid var(--ln);border-radius:12px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:clamp(10px,1.4vw,16px) clamp(12px,1.6vw,20px);text-align:left;vertical-align:top;font-size:clamp(.86rem,1.1vw,1rem)}
+thead th{background:var(--p1);color:var(--on-p1);font-weight:700}
+tbody th{font-weight:700;width:34%}
+tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--ln)}
+td{color:var(--mut)}td b{color:var(--ink)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.big{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:clamp(12px,1.6vw,20px);min-width:0}
+.big strong{flex:none;font:800 clamp(1.6rem,3.4vw,2.8rem)/1 var(--display);color:var(--c)}
+.big p{font-size:clamp(.86rem,1.08vw,1rem);color:var(--mut);min-width:0}
+.big p b{color:var(--ink)}
+
+/* repaso */
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.stat{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:clamp(12px,1.6vw,20px);display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat strong{font:800 clamp(1.4rem,3vw,2.4rem)/1 var(--display);color:var(--c);font-variant-numeric:tabular-nums}
+.stat span{color:var(--mut);font-size:clamp(.82rem,1vw,.95rem)}
+.stat em{font-style:normal;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink)}
+.src{color:var(--mut);font-size:.85rem}
+
+/* pie: ruta */
+.foot{display:flex;align-items:center;gap:12px;padding:10px var(--gr) 10px var(--gx);border-top:1px solid var(--ln);flex:none}
+.nav{flex:none;width:38px;height:38px;border-radius:8px;border:1px solid var(--ln);background:var(--card);display:grid;place-items:center;font-size:1.1rem;font-weight:700}
+.nav:disabled{opacity:.35;cursor:default}
+.route{flex:1;display:flex;gap:4px;min-width:0}
+.route button{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding-top:2px}
+.route button:focus-visible{outline:3px solid var(--p1);outline-offset:2px}
+.route i{display:block;height:6px;background:var(--ln);transform:skewX(-30deg);transition:background .3s}
+.route span{font-size:.68rem;font-weight:600;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}
+.route i{background:color-mix(in srgb,var(--w) 30%,var(--ln))}
+.route button.done i{background:var(--w)}
+.route button.cur i{background:var(--w);height:10px;margin-top:-2px}
+.route button.cur span{color:var(--ink);font-weight:700}
+.count{flex:none;font:700 .85rem var(--display);font-variant-numeric:tabular-nums;color:var(--mut);min-width:3.6em;text-align:right}
+
+/* glosario */
+.scrim{position:fixed;inset:0;background:#0b123066;z-index:20;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);z-index:21;background:var(--bg);border-left:1px solid var(--ln);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .35s cubic-bezier(.7,0,.2,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.panel.open{transform:none}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px var(--gr) 8px 18px}
+.ph h2{font-size:1.15rem}
+.sf{padding:4px var(--gr) 12px 18px}
+.sf input{width:100%;background:var(--card);color:var(--ink);border:1px solid var(--ln);border-radius:8px;padding:10px 12px;font:600 .95rem var(--body)}
+.gl{flex:1;overflow-y:auto;padding:0 var(--gr) 24px 18px;display:flex;flex-direction:column;gap:10px}
+.gl div{background:var(--card);border:1px solid var(--ln);border-radius:10px;padding:12px 14px}
+.gl dt{font-weight:700;color:var(--p1)}
+.gl dd{color:var(--mut);font-size:.92rem;margin-top:2px}
+.gl .none{color:var(--mut);background:none;border:0}
+
+@media (max-width:760px){
+  .grid,.pair,.stats,.team{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .brand span{display:none}
+  .btn kbd{display:none}
+  .route span{display:none}
+  .bands{width:100%;inset:auto 0 0 0;height:16%}
+  .bands i:nth-child(1){clip-path:polygon(0 100%,100% 0,100% 100%)}
+  .bands i:nth-child(2){clip-path:polygon(40% 100%,46% 100%,100% 24%,100% 10%)}
+  .bands i:nth-child(3){display:none}
+  .cover .in{padding-bottom:18%}
+}
+@media (prefers-reduced-motion:reduce){
+  .s.on.f,.s.on.b,.s.on .rise{animation:none;clip-path:none}
+  .panel,.scrim{transition:none}
+}
+</style>
+
+</head>
+<body>
+<header class="top">
+  <div class="brand"><i aria-hidden="true"></i><span>NTC 6038 · Sello Ambiental Colombiano</span></div>
+  <p class="who" id="who"></p>
+  <div class="tools">
+    <button class="btn pri" id="gbtn" type="button" aria-haspopup="dialog">Glosario <kbd>G</kbd></button>
+    <button class="btn" id="tbtn" type="button" aria-pressed="false">Oscuro</button>
+  </div>
+</header>
+
+<main class="stage" id="stage" aria-live="polite">
+
+<!-- 1 PORTADA -->
+<section class="s cover" data-name="Portada" data-by="1" aria-label="Portada">
+  <div class="in">
+    <div class="bands" aria-hidden="true"><i></i><i></i><i></i></div>
+    <div class="txt">
+      <p class="eyebrow"><span class="chip">Norma Técnica Colombiana · ICONTEC 2013</span></p>
+      <h1>Requisitos de la NTC&nbsp;6038</h1>
+      <p class="lead">Sello Ambiental Colombiano para materiales impresos</p>
+    </div>
+    <div class="tags">
+      <div class="tag"><b><button class="g" data-t="Etiqueta ambiental Tipo I">Etiqueta Tipo I</button></b><span>Voluntaria y certificada por un tercero</span></div>
+      <div class="tag"><b>Papel y cartón</b><span>Offset, letterpress, flexografía, serigrafía, digital y rotograbado</span></div>
+      <div class="tag"><b>Ciclo de vida</b><span>Criterios ambientales múltiples</span></div>
+    </div>
+    <div class="team">
+      <div class="mem w1"><b>Andrés Martínez</b><span>Alcance y requisitos generales · diapositivas 1 a 3</span></div>
+      <div class="mem w2"><b>Juan Sebastián Arango</b><span>Materias primas y límites de VOC · diapositivas 4 y 5</span></div>
+      <div class="mem w3"><b>Juan Carlos Herrera</b><span>Proceso, evidencia y cifras · diapositivas 6 a 8</span></div>
+    </div>
+    <p class="hint">Avanza con <kbd>→</kbd> o desliza. Abre el glosario con <kbd>G</kbd>.</p>
+  </div>
+</section>
+
+<!-- 2 ALCANCE -->
+<section class="s" data-name="Alcance" data-by="1" aria-label="Alcance y principios">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Numerales 0 y 1</span> Objeto y principios</p>
+    <h2 class="rise">Alcance y principios de la norma</h2>
+    <div class="grid">
+      <article class="card c1 rise"><header><span class="n">1</span><h3>Qué cubre</h3></header><ul>
+        <li>Materiales impresos hechos principalmente de papel y cartón.</li>
+        <li>Tecnologías: litografía offset (<button class="g" data-t="Sheet fed">sheetfed</button>, <button class="g" data-t="Cold set">coldset</button> y <button class="g" data-t="Heat set">heatset</button>), letterpress, flexografía, serigrafía, digital y rotograbado.</li></ul></article>
+      <article class="card c2 rise"><header><span class="n">2</span><h3>Qué se obtiene</h3></header><ul>
+        <li>Cumplir los requisitos permite obtener la <button class="g" data-t="Etiqueta ambiental Tipo I">etiqueta ambiental Tipo I</button> del <button class="g" data-t="SAC">Sello Ambiental Colombiano</button>.</li>
+        <li>Es un programa voluntario, certificado por un tercero y basado en criterios múltiples.</li></ul></article>
+      <article class="card c3 rise"><header><span class="n">3</span><h3>Principios del ecoetiquetado</h3></header><ul>
+        <li>Uso sostenible de los recursos y mínimo uso de materias primas nocivas.</li>
+        <li>Menos energía o fuentes renovables, y menos materiales de empaque.</li>
+        <li>Tecnologías limpias o de menor impacto relativo.</li></ul></article>
+      <article class="card c1 rise"><header><span class="n">4</span><h3>Enfoque de evaluación</h3></header><ul>
+        <li>No exige un <button class="g" data-t="Análisis de ciclo de vida">análisis de ciclo de vida</button> completo: usa un balance ambiental con criterios clave.</li>
+        <li>Resalta químicos de impresión y materiales peligrosos.</li>
+        <li>Los niveles de exigencia suben con la mejora continua.</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- 3 GENERALES -->
+<section class="s" data-name="Generales" data-by="1" aria-label="Requisitos generales">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Numerales 4.1 y 4.2</span> Gestión ambiental</p>
+    <h2 class="rise">Requisitos generales de la organización</h2>
+    <div class="grid">
+      <article class="card c1 rise"><header><span class="n">1</span><h3>Legislación y proveedores</h3></header><ul>
+        <li>Procedimiento para identificar, cumplir y evaluar la legislación ambiental aplicable (4.1).</li>
+        <li>Criterios de compra con consideraciones ambientales y prioridad a proveedores comprometidos (4.2.4).</li>
+        <li>Mantenimiento preventivo y correctivo de equipos, con registros (4.2.1).</li></ul></article>
+      <article class="card c2 rise"><header><span class="n">2</span><h3>Registros mensuales y metas</h3></header><ul>
+        <li>Consumo de energía, de agua y generación de residuos por unidad de producción (4.2.5 a 4.2.7).</li>
+        <li>Cada registro lleva un plan con metas, plazos, responsables y actividades.</li>
+        <li>Residuos peligrosos: contrato con <button class="g" data-t="Gestor autorizado">gestores autorizados</button>.</li></ul></article>
+      <article class="card c3 rise"><header><span class="n">3</span><h3>Impactos, emisiones y vertimientos</h3></header><ul>
+        <li>Identificar, valorar y priorizar los impactos ambientales del proceso (4.2.2).</li>
+        <li>Programa para controlar contaminación atmosférica, auditiva y visual (4.2.8).</li>
+        <li>Caracterizar y controlar los <button class="g" data-t="Vertimientos">vertimientos</button> (4.2.9).</li></ul></article>
+      <article class="card c1 rise"><header><span class="n">4</span><h3>Combustibles, ozono y seguridad</h3></header><ul>
+        <li>Equipos con combustibles limpios, o justificación y cumplimiento de emisiones (4.2.3).</li>
+        <li>Sin <button class="g" data-t="CFC, halones y HCFC">CFC ni halones</button>, y sin instalar equipos con HCFC (4.2.10 y 4.2.11).</li>
+        <li>Programa de seguridad industrial y salud ocupacional (4.2.16).</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- 4 MATERIAS PRIMAS -->
+<section class="s" data-name="Materias primas" data-by="2" aria-label="Materias primas">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Numeral 4.3</span> Sustrato y químicos</p>
+    <h2 class="rise">Materias primas, componentes e insumos</h2>
+    <div class="grid">
+      <article class="card c2 rise"><header><span class="n">1</span><h3>Sustrato de papel y cartón</h3></header><ul>
+        <li>Al menos el <b>80 % en peso</b> debe cumplir la <button class="g" data-t="NTC 6019">NTC 6019</button> (4.3.11).</li>
+        <li>El <button class="g" data-t="Papel carbón">papel carbón</button> no puede formar parte del material impreso.</li>
+        <li>Tintas según la <button class="g" data-t="NTC 6039">NTC 6039</button> y tóner según la <button class="g" data-t="NTC 6023">NTC 6023</button> (4.3.13).</li></ul></article>
+      <article class="card c1 rise"><header><span class="n">2</span><h3>Químicos de impresión</h3></header><ul>
+        <li>No pueden estar clasificados como extremadamente tóxicos, mutagénicos, carcinogénicos, tóxicos para la reproducción o ecotóxicos (4.3.12.1).</li>
+        <li>Aplica a tintas, tóneres, barnices, adhesivos, limpiadores y <button class="g" data-t="Solución de fuente">soluciones de fuente</button>.</li></ul></article>
+      <article class="card c3 rise"><header><span class="n">3</span><h3>Sustancias prohibidas</h3></header><ul>
+        <li>Solventes halogenados y aromáticos por encima del 1 % (4.3.12.2).</li>
+        <li>Etoxilatos de alquil-fenol, <button class="g" data-t="EDTA y NTA">EDTA, NTA</button> y <button class="g" data-t="PFOS">PFOS</button>.</li>
+        <li><button class="g" data-t="PBB y PBDE">PBB, PBDE</button>, <button class="g" data-t="Parafinas cloradas">parafinas cloradas</button>, <button class="g" data-t="Organoestánnicos">organoestánnicos</button> en plásticos y <button class="g" data-t="Colorantes azo">colorantes azo</button> en contacto con la piel (4.3.3 a 4.3.7).</li></ul></article>
+      <article class="card c2 rise"><header><span class="n">4</span><h3>Materiales y diseño</h3></header><ul>
+        <li>Productos químicos con <button class="g" data-t="Potencial de agotamiento del ozono">potencial de afectación de la capa de ozono</button> igual a cero (4.3.2).</li>
+        <li>Diseño que permita separar materiales; plásticos de más de 25 g marcados para su recolección (4.3.4 y 4.3.8).</li>
+        <li><button class="g" data-t="Biocida">Biocidas</button> no <button class="g" data-t="Bioacumulable">bioacumulables</button> (4.3.16).</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- 5 VOC -->
+<section class="s" data-name="VOC" data-by="2" aria-label="Límites de VOC">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Numerales 4.3.14 y 4.3.15</span> Tabla 1 de la norma</p>
+    <h2 class="rise">Límites de <button class="g" data-t="VOC" style="font:inherit;letter-spacing:inherit">VOC</button> en químicos de impresión</h2>
+    <div class="tw rise" tabindex="0" role="region" aria-label="Tabla 1, contenido máximo de VOC">
+      <table>
+        <thead><tr><th scope="col">Proceso de impresión</th><th scope="col">Contenido de VOC de la solución de fuente (por peso de la formulación en uso)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row"><button class="g" data-t="Heat set">Offset rotativa al calor (heat set)</button></th><td>Menos de <b>1,6 %</b>; o menos de <b>3,0 %</b> si la solución se refrigera a 13 °C o menos; o menos de <b>5,0 %</b> si no se usa <button class="g" data-t="Alcohol isopropílico">alcohol isopropílico</button>.</td></tr>
+          <tr><th scope="row"><button class="g" data-t="Cold set">Offset rotativa al frío (cold set)</button></th><td>Menos de <b>5 %</b> y sin alcohol isopropílico.</td></tr>
+          <tr><th scope="row"><button class="g" data-t="Sheet fed">Offset de alimentación por hojas (sheet fed)</button></th><td>Menos de <b>5 %</b>; o menos de <b>8,5 %</b> si la solución se refrigera a 13 °C o menos.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="pair">
+      <div class="big rise" style="--c:var(--p3)"><strong>95&nbsp;%</strong><p><b>Agentes de limpieza:</b> el 95 % de los agentes usados no debe superar 30 % de VOC por peso.</p></div>
+      <div class="big rise" style="--c:var(--p1)"><strong>↓ VOC</strong><p><b>Programa de reducción:</b> la organización debe participar en uno que reduzca o sustituya alcoholes y otros químicos altos en VOC.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 PROCESO, EMPAQUE, DISPOSICIÓN, ROTULADO -->
+<section class="s" data-name="Proceso y salida" data-by="3" aria-label="Proceso, empaque, disposición final y rotulado">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Numerales 4.4 a 7</span> Del proceso al usuario</p>
+    <h2 class="rise">Proceso, empaque, disposición final y rotulado</h2>
+    <div class="grid">
+      <article class="card c1 rise"><header><span class="n">1</span><h3>Requisitos de proceso (4.4)</h3></header><ul>
+        <li>Forma de producción: reducir o reciclar las aguas de revelado y recuperar la plata hasta un máximo de 5 mg/L.</li>
+        <li>Offset <button class="g" data-t="Heat set">heat set</button>: control de VOC de los hornos con eficiencia mínima del 90 %.</li>
+        <li>Impresión digital: equipos con sello ambiental reconocido.</li></ul></article>
+      <article class="card c2 rise"><header><span class="n">2</span><h3>Empaque y embalaje (4.5)</h3></header><ul>
+        <li>Reciclables o degradables; si no es posible, programa de retorno a la organización.</li>
+        <li>Plásticos sin polímeros ni compuestos de halógenos orgánicos.</li>
+        <li>Plásticos identificados según la <button class="g" data-t="NTC 3205">NTC 3205</button>.</li></ul></article>
+      <article class="card c3 rise"><header><span class="n">3</span><h3>Disposición final (5)</h3></header><ul>
+        <li>El material impreso debe ser reciclable.</li>
+        <li>Barnices y plastificados solo en cubiertas de libros, catálogos, cuadernos, cuadernillos y folders.</li>
+        <li>Si un componente es residuo peligroso, programa para que el usuario lo devuelva.</li></ul></article>
+      <article class="card c1 rise"><header><span class="n">4</span><h3>Rotulado y aptitud (6 y 7)</h3></header><ul>
+        <li>Mostrar el tipo de sustrato y el símbolo de reciclaje con la petición de reciclar.</li>
+        <li>Solo se omite por solicitud expresa del cliente, con evidencia.</li>
+        <li>Cumplir una norma técnica de aptitud para el uso.</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- 7 EVIDENCIA -->
+<section class="s" data-name="Evidencia" data-by="3" aria-label="Cómo se demuestra el cumplimiento">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Verificación</span> Evidencia exigida</p>
+    <h2 class="rise">¿Cómo se demuestra el cumplimiento?</h2>
+    <div class="grid">
+      <article class="card c3 rise"><header><span class="n">1</span><h3>Declaración escrita</h3></header><ul>
+        <li>Firmada por la alta dirección u otro representante autorizado.</li>
+        <li>Se presenta para el sustrato, los químicos, las tintas, las soluciones de fuente y la forma de producción.</li></ul></article>
+      <article class="card c2 rise"><header><span class="n">2</span><h3>Listado maestro y registro de trabajo</h3></header><ul>
+        <li>Describen sustratos, tintas, tóneres y químicos usados, con marca y proveedor.</li>
+        <li>Incluyen especificaciones, cantidades y hojas de seguridad (<button class="g" data-t="MSDS">MSDS</button>).</li></ul></article>
+      <article class="card c1 rise"><header><span class="n">3</span><h3>Evidencia de terceros</h3></header><ul>
+        <li>Sello ambiental de los sustratos (NTC 6019), tintas (NTC 6039) y tóner (NTC 6023).</li>
+        <li>O un informe de evaluación independiente que demuestre el cumplimiento.</li></ul></article>
+      <article class="card c3 rise"><header><span class="n">4</span><h3>Muestra y porcentaje de sustrato</h3></header><ul>
+        <li>Una muestra del material impreso.</li>
+        <li>Descripción del material final y porcentaje de papel y cartón con sello ambiental, por peso del producto.</li></ul></article>
+    </div>
+  </div>
+</section>
+
+<!-- 8 REPASO -->
+<section class="s" data-name="Repaso" data-by="3" aria-label="Cifras para repasar">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Para repasar</span> Las cifras de la norma</p>
+    <h2 class="rise">Seis números que conviene recordar</h2>
+    <div class="stats">
+      <div class="stat rise" style="--c:var(--p1)"><em>4.3.11</em><strong>80&nbsp;%</strong><span>del sustrato, en peso, debe cumplir la NTC 6019.</span></div>
+      <div class="stat rise" style="--c:var(--p3)"><em>4.3.12.2</em><strong>1&nbsp;%</strong><span>máximo de solventes halogenados y aromáticos.</span></div>
+      <div class="stat rise" style="--c:var(--p1)"><em>4.3.14</em><strong>30&nbsp;%</strong><span>de VOC por peso, tope para el 95 % de los agentes de limpieza.</span></div>
+      <div class="stat rise" style="--c:var(--p3)"><em>4.3.8</em><strong>25&nbsp;g</strong><span>de plástico, desde donde se exige marcar para recolección.</span></div>
+      <div class="stat rise" style="--c:var(--p1)"><em>4.4</em><strong>5&nbsp;mg/L</strong><span>de plata como máximo en aguas de revelado.</span></div>
+      <div class="stat rise" style="--c:var(--p3)"><em>4.4</em><strong>90&nbsp;%</strong><span>de eficiencia mínima en el control de VOC de hornos heat set.</span></div>
+    </div>
+    <p class="src">Fuente: ICONTEC, NTC 6038, Criterios ambientales para materiales impresos (2013). Los numerales corresponden al texto de la norma.</p>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <button class="nav" id="prev" type="button" aria-label="Diapositiva anterior">←</button>
+  <nav class="route" id="route" aria-label="Ruta de la presentación"></nav>
+  <span class="count" id="count" aria-hidden="true">1/8</span>
+  <button class="nav" id="next" type="button" aria-label="Diapositiva siguiente">→</button>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" role="dialog" aria-label="Glosario" inert>
+  <div class="ph"><h2>Glosario</h2><button class="btn" id="gclose" type="button">Cerrar <kbd>Esc</kbd></button></div>
+  <div class="sf"><input id="gq" type="search" placeholder="Buscar un término" aria-label="Buscar en el glosario" autocomplete="off"></div>
+  <dl class="gl" id="gl"></dl>
+</aside>
+
+<script>
+(function(){
+  var GL=[
+    ["SAC (Sello Ambiental Colombiano)","Sello oficial que identifica productos y servicios con menor impacto ambiental, verificado por un organismo de certificación."],
+    ["Etiqueta ambiental Tipo I","Programa voluntario, de criterios múltiples y certificado por un tercero. Evalúa el producto con varios aspectos ambientales a la vez."],
+    ["Análisis de ciclo de vida","Estudio de los impactos ambientales de un producto desde la extracción de materias primas hasta su disposición final. La norma no lo exige completo."],
+    ["Sustrato","Material sobre el que se imprime. En esta norma es papel o cartón."],
+    ["NTC 6019","Norma colombiana con los criterios del sello ambiental para el sustrato de papel y cartón. Al menos el 80 % del sustrato en peso debe cumplirla."],
+    ["NTC 6039","Norma colombiana con los criterios del sello ambiental para tintas de impresión."],
+    ["NTC 6023","Norma colombiana con los criterios del sello ambiental para tóner."],
+    ["NTC 3205","Norma colombiana usada para identificar los plásticos con un código de marcado."],
+    ["VOC","Compuestos orgánicos volátiles. Sustancias que se evaporan con facilidad y se emiten al aire. La norma limita su contenido en soluciones de fuente y agentes de limpieza."],
+    ["Solución de fuente","Líquido que se aplica en la impresión offset para humedecer la plancha. Suele llevar alcohol, que aporta VOC."],
+    ["Alcohol isopropílico","Alcohol que se añade con frecuencia a la solución de fuente. Es una fuente importante de VOC."],
+    ["Heat set","Offset rotativa al calor. La tinta se seca en un horno, por eso se exige controlar los VOC que salen de él."],
+    ["Cold set","Offset rotativa al frío. Se imprime sin horno de secado."],
+    ["Sheet fed","Offset de alimentación por hojas sueltas, en lugar de una bobina continua."],
+    ["MSDS","Hojas de datos de seguridad. Documento del proveedor con la composición, los riesgos y el manejo de un producto químico."],
+    ["CFC, halones y HCFC","Sustancias que dañan la capa de ozono. La norma prohíbe CFC y halones, y no permite instalar equipos con HCFC."],
+    ["Potencial de agotamiento del ozono","Medida de cuánto daña una sustancia la capa de ozono. La norma pide que sea cero en los productos químicos."],
+    ["EDTA y NTA","Agentes quelantes, usados para atrapar metales en soluciones químicas. La norma los prohíbe entre los químicos de impresión."],
+    ["PFOS","Sustancia perfluorada persistente en el ambiente. Está prohibida por la norma."],
+    ["PBB y PBDE","Retardantes de llama bromados. Están prohibidos por la norma."],
+    ["Parafinas cloradas","Compuestos clorados usados como plastificantes o aditivos. La norma las prohíbe."],
+    ["Organoestánnicos","Compuestos orgánicos de estaño. La norma los prohíbe en los plásticos."],
+    ["Colorantes azo","Colorantes sintéticos. La norma restringe los que están en contacto con la piel."],
+    ["Biocida","Sustancia que mata o controla organismos, por ejemplo microorganismos en soluciones de la imprenta."],
+    ["Bioacumulable","Que se acumula en los tejidos de los seres vivos con el tiempo. Los biocidas permitidos no pueden serlo."],
+    ["Papel carbón","Papel recubierto con una capa de tinta o pigmento que permite copiar por presión. No puede formar parte del material impreso."],
+    ["Vertimientos","Descargas de aguas residuales de la operación. Se deben caracterizar y controlar."],
+    ["Gestor autorizado","Empresa con autorización para recoger, tratar o disponer residuos peligrosos."]
+  ];
+
+  var $=function(i){return document.getElementById(i)};
+  var slides=[].slice.call(document.querySelectorAll('.s'));
+  var N=slides.length, cur=-1, timer=0;
+  var WHO=['','Andrés Martínez','Juan Sebastián Arango','Juan Carlos Herrera'];
+  var route=$('route'), count=$('count'), prev=$('prev'), next=$('next');
+
+  slides.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.type='button';b.innerHTML='<i></i><span></span>';b.className='w'+s.getAttribute('data-by');
+    b.querySelector('span').textContent=s.getAttribute('data-name');
+    b.setAttribute('aria-label','Ir a '+s.getAttribute('data-name')+', diapositiva '+(i+1));
+    b.addEventListener('click',function(){goto(i)});
+    route.appendChild(b);
+  });
+  var rb=[].slice.call(route.children);
+
+  function show(n,animate){
+    n=Math.max(0,Math.min(N-1,n));
+    if(n===cur)return;
+    var old=cur>=0?slides[cur]:null, nu=slides[n];
+    clearTimeout(timer);
+    slides.forEach(function(s){ if(s!==old&&s!==nu){s.classList.remove('on','out','f','b')} });
+    if(old){old.classList.remove('on','f','b');old.classList.add('out')}
+    nu.classList.remove('out','f','b');
+    nu.scrollTop=0;
+    if(animate&&old){nu.classList.add(n>cur?'f':'b')}
+    nu.classList.add('on');
+    nu.setAttribute('aria-hidden','false');
+    if(old)old.setAttribute('aria-hidden','true');
+    if(old){timer=setTimeout(function(){old.classList.remove('out')},animate?850:0)}
+    cur=n;
+    rb.forEach(function(b,i){
+      b.classList.toggle('done',i<n);
+      b.classList.toggle('cur',i===n);
+      if(i===n)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');
+    });
+    var by=+nu.getAttribute('data-by');
+    $('who').textContent='Expone · '+WHO[by];$('who').className='who w'+by;
+    count.textContent=(n+1)+'/'+N;
+    prev.disabled=n===0;next.disabled=n===N-1;
+  }
+  function goto(i){ i=Math.max(0,Math.min(N-1,i)); if(String(i+1)===location.hash.slice(1)){show(i,true)} else {location.hash=String(i+1)} }
+  function fromHash(animate){
+    var n=parseInt(location.hash.slice(1),10);
+    if(!(n>=1&&n<=N))n=1;
+    show(n-1,animate);
+  }
+  window.addEventListener('hashchange',function(){fromHash(true)});
+  fromHash(false);
+
+  prev.addEventListener('click',function(){goto(cur-1)});
+  next.addEventListener('click',function(){goto(cur+1)});
+
+  /* teclado */
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var typing=/^(INPUT|TEXTAREA)$/.test(e.target.tagName);
+    if(e.key==='Escape'){closeG();return}
+    if(typing)return;
+    if(e.key==='g'||e.key==='G'){e.preventDefault();panel.classList.contains('open')?closeG():openG();return}
+    if(panel.classList.contains('open'))return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||(e.key===' '&&e.target.tagName!=='BUTTON')){e.preventDefault();goto(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goto(cur-1)}
+    else if(e.key==='Home'){goto(0)}
+    else if(e.key==='End'){goto(N-1)}
+  });
+
+  /* deslizar */
+  var sx=0,sy=0,stg=$('stage');
+  stg.addEventListener('touchstart',function(e){var t=e.changedTouches[0];sx=t.clientX;sy=t.clientY},{passive:true});
+  stg.addEventListener('touchend',function(e){
+    var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dy)<50&&!e.target.closest('.tw')){goto(cur+(dx<0?1:-1))}
+  },{passive:true});
+
+  /* glosario */
+  var panel=$('panel'),scrim=$('scrim'),gq=$('gq'),gl=$('gl'),lastFocus=null;
+  function norm(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+  function render(q){
+    var k=norm(q||'').trim();
+    gl.textContent='';
+    var shown=0;
+    GL.forEach(function(g){
+      if(k&&norm(g[0]+' '+g[1]).indexOf(k)<0)return;
+      var d=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');
+      dt.textContent=g[0];dd.textContent=g[1];d.appendChild(dt);d.appendChild(dd);gl.appendChild(d);shown++;
+    });
+    if(!shown){var d=document.createElement('div');d.className='none';d.textContent='Ningún término coincide con la búsqueda.';gl.appendChild(d)}
+  }
+  function openG(term){
+    lastFocus=document.activeElement;
+    gq.value=term||'';render(term||'');
+    panel.inert=false;panel.classList.add('open');scrim.classList.add('open');
+    setTimeout(function(){gq.focus()},60);
+  }
+  function closeG(){
+    if(!panel.classList.contains('open'))return;
+    panel.classList.remove('open');scrim.classList.remove('open');panel.inert=true;
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+  $('gbtn').addEventListener('click',function(){openG()});
+  $('gclose').addEventListener('click',closeG);
+  scrim.addEventListener('click',closeG);
+  gq.addEventListener('input',function(){render(gq.value)});
+  document.addEventListener('click',function(e){
+    var g=e.target.closest&&e.target.closest('.g');
+    if(g&&g.getAttribute('data-t')){e.preventDefault();openG(g.getAttribute('data-t'))}
+  });
+  render('');
+
+  /* tema: claro por defecto, con interruptor */
+  var R=document.documentElement,tb=$('tbtn');
+  function setTheme(t){
+    if(t==='dark')R.setAttribute('data-theme','dark');else R.removeAttribute('data-theme');
+    tb.textContent=t==='dark'?'Claro':'Oscuro';
+    tb.setAttribute('aria-pressed',t==='dark'?'true':'false');
+  }
+  try{setTheme(localStorage.getItem('ntc6038-tema')==='dark'?'dark':'light')}catch(e){setTheme('light')}
+  tb.addEventListener('click',function(){
+    var t=R.getAttribute('data-theme')==='dark'?'light':'dark';
+    setTheme(t);
+    try{localStorage.setItem('ntc6038-tema',t)}catch(e){}
+  });
+
+})();
+</script>
+
+</body>
+</html>
