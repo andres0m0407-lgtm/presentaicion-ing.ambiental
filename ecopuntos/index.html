@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>EcoPuntos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800;9..144,900&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+/* Presentación EcoPuntos: escenario a pantalla completa; paleta de hoja, sol y agua; símbolo de reciclaje como motivo. */
+:root{
+  --bg:#f1f6ea; --ink:#10301f; --mut:#476052; --ln:#10301f26; --card:#ffffff;
+  --p1:#1f7a46; --p2:#e9b72e; --p3:#1a74ad;
+  --on-p1:#ffffff; --on-p2:#10301f; --on-p3:#ffffff;
+  --tint:#e3efd9;
+  --display:'Fraunces',Georgia,'Times New Roman',serif;
+  --body:'Figtree',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --gx:max(16px,env(safe-area-inset-left,0px));
+  --gr:max(16px,env(safe-area-inset-right,0px));
+}
+:root[data-theme="dark"]{
+  --bg:#0b1f15; --ink:#e6f2e6; --mut:#9db8a4; --ln:#ffffff2e; --card:#12301f; --tint:#173a27;
+  --p1:#5fd08a; --p2:#f4c94a; --p3:#5db8f0;
+  --on-p1:#0b1f15; --on-p2:#0b1f15; --on-p3:#0b1f15;
+  color-scheme:dark;
+}
+@property --t{syntax:'<percentage>';inherits:false;initial-value:0%}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--ink);font:400 clamp(15px,1.3vw,18px)/1.5 var(--body);display:flex;flex-direction:column;overflow:hidden}
+h1,h2,h3,p,ul,dl,dd{margin:0}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--p3);outline-offset:2px}
+.ic{width:1.35em;height:1.35em;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+
+/* barra superior */
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px var(--gr) 10px var(--gx);border-bottom:1px solid var(--ln);flex:none}
+.brand{display:flex;align-items:center;gap:10px;font:700 .8rem/1.2 var(--body);letter-spacing:.08em;text-transform:uppercase;min-width:0}
+.brand svg{flex:none;width:26px;height:26px;color:var(--p1)}
+.brand span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tools{display:flex;gap:8px;flex:none}
+.btn{border:1px solid var(--ln);background:var(--card);border-radius:999px;padding:7px 14px;font-weight:600;font-size:.85rem;display:inline-flex;align-items:center;gap:8px}
+.btn:hover{border-color:var(--p1)}
+.btn kbd{font:600 .7rem var(--body);border:1px solid var(--ln);border-radius:4px;padding:0 5px;color:var(--mut)}
+.btn.pri{background:var(--p1);color:var(--on-p1);border-color:var(--p1)}
+.btn.pri kbd{color:var(--on-p1);border-color:#ffffff66}
+
+/* escenario */
+.stage{position:relative;flex:1;min-height:0}
+.s{position:absolute;inset:0;display:none;overflow-y:auto;overflow-x:hidden;padding:0 var(--gr) 0 var(--gx);
+  background:var(--bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%231f7a46' stroke-opacity='.08' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg id='a'%3E%3Cpath d='M56.8 25.9L81.2 68.1'/%3E%3Cpath d='M86.2 76.8L74.3 72.1L88.1 64.1Z' fill='%231f7a46' fill-opacity='.08'/%3E%3C/g%3E%3Cuse href='%23a' transform='rotate(120 50 58)'/%3E%3Cuse href='%23a' transform='rotate(240 50 58)'/%3E%3C/svg%3E") no-repeat right -70px bottom -70px/380px}
+.s.on,.s.out{display:block}
+.s.on{z-index:2}.s.out{z-index:1}
+.s.on.f{animation:wf .8s cubic-bezier(.7,0,.2,1) both;clip-path:polygon(0 0,var(--t) 0,calc(var(--t) - 30%) 100%,0 100%)}
+.s.on.b{animation:wb .8s cubic-bezier(.7,0,.2,1) both;clip-path:polygon(100% 0,calc(100% - var(--t)) 0,calc(100% - var(--t) + 30%) 100%,100% 100%)}
+@keyframes wf{from{--t:0%}to{--t:130%}}
+@keyframes wb{from{--t:0%}to{--t:130%}}
+.s.on .rise{animation:rise .6s .45s cubic-bezier(.2,.7,.2,1) both}
+.s.on .rise:nth-child(2){animation-delay:.52s}.s.on .rise:nth-child(3){animation-delay:.59s}.s.on .rise:nth-child(4){animation-delay:.66s}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.in{max-width:1240px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;justify-content:center;gap:clamp(12px,2.4vh,26px);padding-block:clamp(16px,3vh,40px);position:relative}
+
+.eyebrow{display:flex;align-items:center;gap:12px;flex-wrap:wrap;color:var(--mut);font-weight:600}
+.chip{background:var(--p2);color:var(--on-p2);font:700 .78rem var(--body);letter-spacing:.06em;text-transform:uppercase;padding:5px 14px;border-radius:14px 0 14px 0}
+h2{font:800 clamp(1.4rem,3.1vw,2.6rem)/1.1 var(--display);text-wrap:balance;letter-spacing:-.01em}
+
+/* tarjetas */
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.g3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.card{background:var(--card);border:1px solid var(--ln);border-radius:20px 4px 20px 4px;padding:clamp(14px,1.8vw,24px);display:flex;flex-direction:column;gap:10px;min-width:0}
+.card header{display:flex;align-items:center;gap:12px}
+.n{flex:none;width:44px;height:44px;display:grid;place-items:center;background:var(--c,var(--p1));color:var(--on,var(--on-p1));border-radius:50% 0 50% 0;font-size:1.05rem}
+h3{font:700 clamp(1rem,1.25vw,1.2rem)/1.2 var(--body);text-wrap:balance}
+.card ul{list-style:none;padding:0;display:flex;flex-direction:column;gap:7px;font-size:clamp(.86rem,1.08vw,1rem);color:var(--mut);line-height:1.45}
+.card li{padding-left:18px;position:relative}
+.card li::before{content:"";position:absolute;left:0;top:.5em;width:9px;height:9px;background:var(--c,var(--p1));border-radius:0 100% 0 100%}
+.card li b{color:var(--ink);font-weight:700}
+.c1{--c:var(--p1);--on:var(--on-p1)}.c2{--c:var(--p2);--on:var(--on-p2)}.c3{--c:var(--p3);--on:var(--on-p3)}
+
+.g{all:unset;cursor:pointer;color:var(--p1);font-weight:700;border-bottom:2px dotted currentColor}
+.g:hover{background:color-mix(in srgb,var(--p1) 14%,transparent)}
+.g:focus-visible{outline:3px solid var(--p3);outline-offset:2px}
+
+/* portada */
+.cover .in{justify-content:center;gap:clamp(14px,3vh,28px);position:static}
+.art{position:absolute;right:0;bottom:0;top:0;width:min(38%,500px);pointer-events:none}
+.art svg{width:100%;height:100%;display:block}
+.f1{fill:var(--p1)}.f2{fill:var(--p2)}.f3{fill:var(--p3)}.fc{fill:var(--card)}.ft{fill:var(--tint)}
+.cover .txt{position:relative;display:flex;flex-direction:column;gap:clamp(12px,2.6vh,24px);max-width:min(100%,720px)}
+h1{font:900 clamp(2.4rem,7vw,5.6rem)/1 var(--display);letter-spacing:-.02em;text-wrap:balance;color:var(--p1)}
+.lead{font-size:clamp(1.05rem,1.8vw,1.45rem);color:var(--mut);max-width:30ch}
+.tags{display:flex;gap:12px;flex-wrap:wrap;position:relative;max-width:min(100%,720px)}
+.tag{background:var(--card);border:1px solid var(--ln);border-radius:16px 4px 16px 4px;padding:12px 16px;max-width:230px;min-width:0}
+.tag b{display:block;font-weight:700}.tag span{color:var(--mut);font-size:.88rem}
+.hint{position:relative;color:var(--mut);font-size:.85rem}
+.hint kbd{font:600 .75rem var(--body);border:1px solid var(--ln);border-radius:4px;padding:1px 6px;background:var(--card)}
+
+.w1{--w:var(--p1)}.w2{--w:var(--p2)}.w3{--w:var(--p3)}
+.who{margin:0;font:600 .82rem var(--body);color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.who::before{content:"";display:inline-block;width:12px;height:12px;margin-right:8px;background:var(--w,var(--p1));border-radius:0 100% 0 100%}
+.team{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;position:relative;max-width:min(100%,720px)}
+.mem{background:var(--card);border:1px solid var(--ln);border-radius:14px;padding:12px 16px;min-width:0}
+.mem b{display:flex;align-items:center;gap:8px;font-weight:700}
+.mem b::before{content:"";flex:none;width:12px;height:12px;background:var(--w);border-radius:0 100% 0 100%}
+.mem span{display:block;color:var(--mut);font-size:.86rem;margin-top:2px}
+
+/* tablas y cifras */
+.tw{overflow-x:auto;border:1px solid var(--ln);border-radius:16px;background:var(--card)}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th,td{padding:clamp(9px,1.3vw,15px) clamp(12px,1.6vw,20px);text-align:left;vertical-align:top;font-size:clamp(.86rem,1.1vw,1rem)}
+thead th{background:var(--p1);color:var(--on-p1);font-weight:700}
+tbody th{font-weight:700;width:26%}
+tbody tr+tr th,tbody tr+tr td{border-top:1px solid var(--ln)}
+td{color:var(--mut)}td b{color:var(--ink)}
+.pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.big{display:flex;gap:16px;align-items:center;background:var(--card);border:1px solid var(--ln);border-radius:20px 4px 20px 4px;padding:clamp(12px,1.6vw,20px);min-width:0}
+.big strong{flex:none;font:900 clamp(1.6rem,3.4vw,2.8rem)/1 var(--display);color:var(--c)}
+.big p{font-size:clamp(.86rem,1.08vw,1rem);color:var(--mut);min-width:0}
+.big p b{color:var(--ink)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(10px,1.6vw,20px)}
+.stat{background:var(--card);border:1px solid var(--ln);border-radius:20px 4px 20px 4px;padding:clamp(12px,1.6vw,20px);display:flex;flex-direction:column;gap:6px;min-width:0}
+.stat strong{font:900 clamp(1.5rem,3vw,2.5rem)/1 var(--display);color:var(--c);font-variant-numeric:tabular-nums}
+.stat span{color:var(--mut);font-size:clamp(.82rem,1vw,.95rem)}
+.stat em{font-style:normal;font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink);display:flex;align-items:center;gap:8px}
+.stat em .ic{color:var(--c)}
+.src{color:var(--mut);font-size:.88rem}
+
+/* flujo del producto */
+.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(18px,2.2vw,30px)}
+.step{position:relative;background:var(--card);border:1px solid var(--ln);border-radius:20px 4px 20px 4px;padding:clamp(12px,1.4vw,18px);display:flex;flex-direction:column;gap:8px;min-width:0}
+.step .n{width:46px;height:46px}
+.step small{font:700 .72rem var(--body);letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.step h3{font-size:clamp(.98rem,1.2vw,1.14rem)}
+.step p{font-size:clamp(.82rem,1vw,.94rem);color:var(--mut);line-height:1.4}
+.step:not(:last-child)::after{content:"";position:absolute;right:calc(-1 * clamp(18px,2.2vw,30px) + 4px);top:34px;width:calc(clamp(18px,2.2vw,30px) - 8px);height:10px;background:var(--p1);clip-path:polygon(0 35%,60% 35%,60% 0,100% 50%,60% 100%,60% 65%,0 65%)}
+.mats{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.mat{display:inline-flex;align-items:center;gap:8px;background:var(--tint);border-radius:999px;padding:8px 16px 8px 12px;font-weight:600;font-size:.92rem}
+.mat .ic{color:var(--p1)}
+.banner{display:flex;align-items:center;gap:clamp(14px,2vw,24px);background:var(--tint);border:1px solid var(--ln);border-radius:28px 6px 28px 6px;padding:clamp(14px,2vw,26px)}
+.banner .n{width:64px;height:64px;font-size:1.6rem;--c:var(--p3);--on:var(--on-p3)}
+.banner.sm{padding:clamp(10px,1.4vw,16px) clamp(14px,2vw,24px)}.banner.sm .n{width:52px;height:52px}.banner.sm p{font-size:clamp(1rem,1.7vw,1.4rem)}
+.banner p{font:800 clamp(1.1rem,2.1vw,1.7rem)/1.2 var(--display);text-wrap:balance}
+
+/* pie: ruta */
+.foot{display:flex;align-items:center;gap:12px;padding:10px var(--gr) 10px var(--gx);border-top:1px solid var(--ln);flex:none}
+.nav{flex:none;width:38px;height:38px;border-radius:50%;border:1px solid var(--ln);background:var(--card);display:grid;place-items:center;font-size:1.1rem;font-weight:700}
+.nav:disabled{opacity:.35;cursor:default}
+.route{flex:1;display:flex;gap:4px;min-width:0}
+.route button{all:unset;cursor:pointer;flex:1;min-width:0;display:flex;flex-direction:column;gap:5px;padding-top:2px}
+.route button:focus-visible{outline:3px solid var(--p3);outline-offset:2px}
+.route i{display:block;height:6px;border-radius:3px;background:color-mix(in srgb,var(--w) 30%,var(--ln));transition:background .3s}
+.route span{font-size:.68rem;font-weight:600;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:.02em}
+.route button.done i{background:var(--w)}
+.route button.cur i{background:var(--w);height:10px;margin-top:-2px}
+.route button.cur span{color:var(--ink);font-weight:700}
+.count{flex:none;font:700 .85rem var(--display);font-variant-numeric:tabular-nums;color:var(--mut);min-width:3.6em;text-align:right}
+
+/* glosario */
+.scrim{position:fixed;inset:0;background:#0b1f1566;z-index:20;opacity:0;pointer-events:none;transition:opacity .25s}
+.scrim.open{opacity:1;pointer-events:auto}
+.panel{position:fixed;top:0;right:0;bottom:0;width:min(440px,100%);z-index:21;background:var(--bg);border-left:1px solid var(--ln);display:flex;flex-direction:column;transform:translateX(102%);transition:transform .35s cubic-bezier(.7,0,.2,1);padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.panel.open{transform:none}
+.ph{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px var(--gr) 8px 18px}
+.ph h2{font-size:1.15rem}
+.sf{padding:4px var(--gr) 12px 18px}
+.sf input{width:100%;background:var(--card);color:var(--ink);border:1px solid var(--ln);border-radius:999px;padding:10px 14px;font:600 .95rem var(--body)}
+.gl{flex:1;overflow-y:auto;padding:0 var(--gr) 24px 18px;display:flex;flex-direction:column;gap:10px}
+.gl div{background:var(--card);border:1px solid var(--ln);border-radius:12px;padding:12px 14px}
+.gl dt{font-weight:700;color:var(--p1)}
+.gl dd{color:var(--mut);font-size:.92rem;margin-top:2px}
+.gl .none{color:var(--mut);background:none;border:0}
+
+@media (max-width:900px){.flow{grid-template-columns:repeat(2,minmax(0,1fr))}.step:not(:last-child)::after{display:none}}
+@media (max-width:760px){
+  .grid,.pair,.g3,.stats,.team,.flow{grid-template-columns:minmax(0,1fr)}
+  .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .brand span{display:none}
+  .btn kbd{display:none}
+  .route span{display:none}
+  .art{width:100%;top:auto;height:26%}
+  .cover .in{padding-bottom:26%}
+}
+@media (prefers-reduced-motion:reduce){
+  .s.on.f,.s.on.b,.s.on .rise{animation:none;clip-path:none}
+  .panel,.scrim{transition:none}
+}
+</style>
+</head>
+<body>
+
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
+<g id="arm"><path d="M56.8 25.9L81.2 68.1"/><path d="M86.2 76.8L74.3 72.1L88.1 64.1Z" fill="currentColor"/></g>
+<symbol id="rc" viewBox="0 0 100 100"><g fill="none" stroke="currentColor" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"><use href="#arm"/><use href="#arm" transform="rotate(120 50 58)"/><use href="#arm" transform="rotate(240 50 58)"/></g></symbol>
+<symbol id="leaf" viewBox="0 0 80 40"><path d="M0 20C20-6 58-6 80 20 58 46 20 46 0 20Z"/><path d="M6 20H70" stroke="var(--card)" stroke-width="2" fill="none"/></symbol>
+</defs></svg>
+<header class="top">
+  <div class="brand"><svg viewBox="0 0 100 100" aria-hidden="true"><use href="#rc"/></svg><span>EcoPuntos · Ingeniería Verde</span></div>
+  <p class="who" id="who"></p>
+  <div class="tools">
+    <button class="btn pri" id="gbtn" type="button" aria-haspopup="dialog">Glosario <kbd>G</kbd></button>
+    <button class="btn" id="tbtn" type="button" aria-pressed="false">Oscuro</button>
+  </div>
+</header>
+
+<main class="stage" id="stage" aria-live="polite">
+
+<section class="s cover" data-name="Portada" data-by="1" aria-label="Portada">
+  <div class="in">
+    <div class="art" aria-hidden="true"><svg viewBox="0 0 560 700" preserveAspectRatio="xMaxYMax meet" style="overflow:visible">
+<circle class="f2" cx="430" cy="120" r="64" opacity=".95"/>
+<path class="f1" opacity=".22" d="M-140 700C0 560 170 450 330 395S510 380 560 340V700Z"/>
+<path class="f1" opacity=".45" d="M-60 700C90 600 250 530 390 470S520 455 560 430V700Z"/>
+<circle class="fc" cx="300" cy="300" r="165"/>
+<circle cx="300" cy="300" r="165" fill="none" stroke="var(--p1)" stroke-width="3" stroke-dasharray="2 10" stroke-linecap="round"/>
+<g style="color:var(--p1)"><use href="#rc" x="170" y="170" width="260" height="260"/></g>
+<path class="f1" d="M10 700C130 640 300 610 430 555S540 545 560 540V700Z"/>
+<g transform="translate(60 520)"><rect class="f2" x="-4" y="40" width="8" height="40" rx="3"/><circle class="ft" cx="0" cy="22" r="30"/><circle class="f1" cx="-14" cy="30" r="18" opacity=".6"/></g>
+<g transform="translate(500 500)"><rect class="f2" x="-4" y="46" width="8" height="44" rx="3"/><circle class="ft" cx="0" cy="26" r="34"/><circle class="f1" cx="14" cy="34" r="20" opacity=".6"/></g>
+<g transform="translate(70 170) rotate(-30)"><use href="#leaf" class="f1" width="80" height="40"/></g>
+<g transform="translate(470 270) rotate(40)"><use href="#leaf" class="f1" width="70" height="35" opacity=".85"/></g>
+<g transform="translate(120 330) rotate(-60) scale(.8)"><use href="#leaf" class="f3" width="80" height="40"/></g>
+<path class="f3" d="M505 190c9 12 16 21 16 31a16 16 0 0 1-32 0c0-10 7-19 16-31z"/>
+<path class="f3" opacity=".7" d="M52 420c6 8 11 14 11 21a11 11 0 0 1-22 0c0-7 5-13 11-21z"/>
+</svg></div>
+    <div class="txt">
+      <p class="eyebrow"><span class="chip">Ingeniería Verde · Medellín</span></p>
+      <h1>EcoPuntos</h1>
+      <p class="lead">Reciclar en casa y recibir descuento en la factura de servicios públicos</p>
+    </div>
+    <div class="tags">
+      <div class="tag"><b>Hogares</b><span>Separan el material aprovechable y se lo entregan al recuperador</span></div>
+      <div class="tag"><b>Recuperadores</b><span>Recogen casa a casa, con ruta y día fijo, y reciben un pago justo</span></div>
+      <div class="tag"><b>Descuento</b><span>Los puntos se convierten en ahorro en la factura</span></div>
+    </div>
+    <div class="team">
+      <div class="mem w1"><b>Andrés Martínez</b><span>Problemática y oportunidad · diapositivas 1 a 3</span></div>
+      <div class="mem w2"><b>Juan Sebastián Arango</b><span>Producto, recuperadores y sistema en línea · 4 a 6</span></div>
+      <div class="mem w3"><b>Juan Carlos Herrera</b><span>Impacto, principios y cierre · 7 a 9</span></div>
+    </div>
+    <p class="hint">Avanza con <kbd>→</kbd> o desliza. Abre el glosario con <kbd>G</kbd>.</p>
+  </div>
+</section>
+
+<section class="s" data-name="Problemática" data-by="1" aria-label="Problemática actual">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Problemática</span> Superservicios, datos de 2024</p>
+    <h2 class="rise">Medellín recicla la mitad que el país y los rellenos se agotan</h2>
+<div class="stats"><div class="stat rise" style="--c:var(--p3)"><em><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c3 4 6 7 6 11a6 6 0 0 1-12 0c0-4 3-7 6-11z"/></svg>Medellín</em><strong>10,08&nbsp;%</strong><span>de los residuos se aprovechó en 2024: 217,51 t/día frente a 1.940,37 t/día dispuestas.</span></div><div class="stat rise" style="--c:var(--p1)"><em><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15M5 19c3-5 6-8 11-11"/></svg>Colombia</em><strong>19,69&nbsp;%</strong><span>de aprovechamiento: 8.346 t/día de 42.376 t/día generadas.</span></div><div class="stat rise" style="--c:var(--p1)"><em><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-6M12 16c-4 0-6-2.5-6-5 0-2 1.5-3.5 3-3.7C9 5 10.5 3 12 3s3 2 3 4.3c1.5.2 3 1.7 3 3.7 0 2.5-2 5-6 5z"/></svg>Bogotá</em><strong>48,21&nbsp;%</strong><span>de aprovechamiento, con el 71,39 % de todo lo aprovechado en el país.</span></div><div class="stat rise" style="--c:var(--p3)"><em><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/></svg>Rellenos</em><strong>30,52&nbsp;%</strong><span>(76 de 249) tiene la vida útil vencida o menor a 3 años.</span></div><div class="stat rise" style="--c:var(--p1)"><em><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2h4v3l1.5 2.5V21a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V7.5L10 5zM8.5 12h7"/></svg>Qué se recicla</em><strong>85,18&nbsp;%</strong><span>del material aprovechado en el país es papel, cartón y plásticos.</span></div><div class="stat rise" style="--c:var(--p3)"><em><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 11a3 3 0 1 0 0-6M17 14c2.5.5 4 2.7 4 6"/></svg>Estaciones</em><strong>66&nbsp;ECA</strong><span>registradas en Medellín, la segunda ciudad con más después de Bogotá.</span></div></div>
+    <p class="src rise">El hogar que separa no recibe nada directo a cambio: ese es el vacío que EcoPuntos quiere cerrar. Fuentes: Superservicios, informes de aprovechamiento y de disposición final 2024. La tasa no mide valor económico.</p>
+  </div>
+</section>
+
+<section class="s" data-name="Oportunidad" data-by="1" aria-label="Oportunidad">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Oportunidad</span> Conectar a quienes hoy no se coordinan</p>
+    <h2 class="rise">Hogares, recuperadores y aliados en un mismo sistema</h2>
+<div class="tw rise" tabindex="0" role="region" aria-label="Actores del sistema"><table><thead><tr><th scope="col">Actor</th><th scope="col">Qué aporta</th><th scope="col">Qué recibe</th></tr></thead><tbody><tr><th scope="row">Hogares</th><td>Material limpio, seco y separado, entregado en mano al recuperador</td><td>Puntos que se convierten en descuento en la factura de servicios públicos</td></tr><tr><th scope="row">Recuperadores de oficio</th><td>Recolección casa a casa, pesaje y registro</td><td>Pago justo, reconocimiento y material más limpio y constante</td></tr><tr><th scope="row">EcoPuntos</th><td>Sistema en línea, registro de puntos y convocatoria</td><td>Aportes de aliados</td></tr><tr><th scope="row">Aliados financiadores</th><td>Aportes para sostener el descuento</td><td>Visibilidad ambiental</td></tr></tbody></table></div>
+    <div class="pair"><div class="big rise" style="--c:var(--p1)"><strong>Ecoins</strong><p>+84.000 usuarios y +200 empresas aliadas (2021): ya hay antecedentes de que los puntos por reciclar funcionan.</p></div><div class="big rise" style="--c:var(--p3)"><strong>Ecobot</strong><p>+4,5 millones de envases reciclados y descuentos en +120 lugares (2022).</p></div></div>
+    <p class="src rise">EcoPuntos va a la casa del hogar, con ruta y día fijo, y le da un lugar central a los recuperadores.</p>
+  </div>
+</section>
+
+<section class="s" data-name="Producto" data-by="2" aria-label="Cómo funciona">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Producto</span> Un programa de recompensas para hogares</p>
+    <h2 class="rise">Así funciona EcoPuntos</h2>
+<div class="flow"><div class="step rise c1"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6"/></svg></span><small>Paso 1</small><h3>Separar</h3><p>El hogar aparta lo aprovechable de la basura común.</p></div><div class="step rise c2"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg></span><small>Paso 2</small><h3>Entregar al recuperador</h3><p>El día de su sector, el hogar está pendiente y le entrega el material en mano.</p></div><div class="step rise c3"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M6 20h12M5 8h14M5 8l-3 7a3.5 3.5 0 0 0 6 0zM19 8l-3 7a3.5 3.5 0 0 0 6 0z"/></svg></span><small>Paso 3</small><h3>Recoger y pesar</h3><p>El recuperador recibe el material y lo pesa en el momento.</p></div><div class="step rise c1"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2"/></svg></span><small>Paso 4</small><h3>Registrar</h3><p>Se registra la entrega y se asignan los puntos al hogar.</p></div><div class="step rise c2"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg></span><small>Paso 5</small><h3>Ahorrar</h3><p>Los puntos se convierten en descuento en la factura.</p></div></div>
+    <div class="mats rise"><b>Qué se recibe:</b><span class="mat"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M10 2h4v3l1.5 2.5V21a1 1 0 0 1-1 1h-5a1 1 0 0 1-1-1V7.5L10 5zM8.5 12h7"/></svg>Botellas y envases plásticos</span><span class="mat"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6"/></svg>Cartón y papel</span><span class="mat"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l1 4v14H6V7zM6 7h12M10 11h4"/></svg>Tetra Pak</span><span>Siempre vacíos, limpios y secos.</span></div>
+    <p class="src rise">Si el material llega sucio o mezclado se rechaza y se le explica al hogar por qué. Ejemplo ilustrativo: 10 kg entregados dan 100 EcoPuntos.</p>
+  </div>
+</section>
+
+<section class="s" data-name="Recuperadores" data-by="2" aria-label="Los recuperadores">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Las personas</span> Nos importan quienes hacen posible el reciclaje</p>
+    <h2 class="rise">Los recuperadores son el centro del sistema</h2>
+<div class="banner sm rise"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/></svg></span><p>EcoPuntos se diseña pensando primero en las personas que recogen: su trabajo merece un buen pago y reconocimiento.</p></div><div class="grid"><article class="card c1 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/></svg></span><h3>Buen pago y reconocimiento</h3></header><ul><li>Ir de casa en casa es un trabajo exigente: el programa busca un buen sueldo o un reconocimiento claro.</li></ul></article><article class="card c2 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16v14H4zM4 10h16M8 3v4M16 3v4"/></svg></span><h3>Un día fijo para cada sector</h3></header><ul><li>Como la gente saca la basura en ciertos días, cada sector tendrá su día de recolección.</li><li>El hogar está pendiente y le entrega el reciclaje en mano.</li></ul></article><article class="card c3 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 11a3 3 0 1 0 0-6M17 14c2.5.5 4 2.7 4 6"/></svg></span><h3>Hogares comprometidos</h3></header><ul><li>La logística de la ruta es compleja: con hogares puntuales y material bien separado, el trabajo es más liviano.</li></ul></article><article class="card c1 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15M5 19c3-5 6-8 11-11"/></svg></span><h3>Se suman, no compiten</h3></header><ul><li>El aprovechamiento formal ya lo hacen los recuperadores (Decreto 596 de 2016).</li><li>EcoPuntos trabaja con ellos y con las ECA formales.</li></ul></article></div>
+  </div>
+</section>
+
+<section class="s" data-name="Sistema en línea" data-by="2" aria-label="Sistema en línea y descuento">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Sistema en línea</span> Recomendación de la asesoría</p>
+    <h2 class="rise">Cada entrega se ve en el celular y se refleja en la factura</h2>
+<div class="grid"><article class="card c2 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 2h8a1 1 0 0 1 1 1v18a1 1 0 0 1-1 1H8a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1zM11 18h2"/></svg></span><h3>Sistema del hogar</h3></header><ul><li>Estima el ahorro a partir de la <b>foto del peso</b> de los residuos.</li><li>Muestra los puntos acumulados.</li></ul></article><article class="card c1 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16M6 20h12M5 8h14M5 8l-3 7a3.5 3.5 0 0 0 6 0zM19 8l-3 7a3.5 3.5 0 0 0 6 0z"/></svg></span><h3>Sistema del recuperador</h3></header><ul><li>Recibe el <b>ID del usuario</b> y su <b>número de contrato</b>.</li><li>Registra el peso y el <button class="g" data-t="Rechazo">rechazo</button> de cada entrega.</li></ul></article><article class="card c3 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg></span><h3>Descuento en la factura</h3></header><ul><li>Los puntos se convierten en un <b>descuento en la factura de servicios públicos</b>.</li><li>La norma ya prevé un incentivo de hasta el 4 % en el aseo para rutas con rechazo menor al 20 % (Decreto 596 de 2016).</li></ul></article><article class="card c2 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M13 2L5 14h6l-1 8 8-12h-6z"/></svg></span><h3>Quién presta cada servicio</h3></header><ul><li><button class="g" data-t="Emvarias">Emvarias</button> presta el aseo.</li><li>EPM factura gas, energía y acueducto.</li></ul></article></div>
+  </div>
+</section>
+
+<section class="s" data-name="Impacto" data-by="3" aria-label="Impacto ambiental, social y económico">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Impacto</span> Ambiental, social y económico</p>
+    <h2 class="rise">Menos residuos al relleno, más personas incluidas</h2>
+<div class="g3"><article class="card c1 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15M5 19c3-5 6-8 11-11"/></svg></span><h3>Ambiental</h3></header><ul><li>Más separación en el hogar y más aprovechamiento.</li><li>Menos residuos a disposición final.</li><li>Se mide en toneladas entregadas y % de rechazo.</li></ul></article><article class="card c2 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 11a3 3 0 1 0 0-6M17 14c2.5.5 4 2.7 4 6"/></svg></span><h3>Social</h3></header><ul><li>Educación ambiental y participación de la comunidad.</li><li>Empleo e ingresos dignos para recuperadores.</li><li>Se mide en hogares activos y talleres.</li></ul></article><article class="card c3 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 14.5c.5 1 1.4 1.5 2.5 1.5 1.5 0 2.5-.8 2.5-2s-1-1.6-2.5-2-2.5-.8-2.5-2 1-2 2.5-2c1 0 2 .5 2.5 1.5M12 6.5v11"/></svg></span><h3>Económico</h3></header><ul><li>Ahorro para los hogares en su factura.</li><li>Ingresos para recuperadores y aportes de aliados.</li><li>Se mide en descuentos aplicados.</li></ul></article></div>
+    <div class="pair"><div class="big rise" style="--c:var(--p1)"><strong>+38.750&nbsp;t</strong><p>al año para pasar de 10,08 % a 15 % de aprovechamiento en Medellín (106,17 t/día más).</p></div><div class="big rise" style="--c:var(--p3)"><strong>~10.600</strong><p>entregas de 10 kg diarias equivalen a esas toneladas. EcoPuntos sería uno de los aportes.</p></div></div>
+    <p class="src rise">Cálculo del equipo con la tabla 14 del informe de aprovechamiento 2024 de la Superservicios. Sirve para dimensionar la meta.</p>
+  </div>
+</section>
+
+<section class="s" data-name="Principios y norma" data-by="3" aria-label="Principios de Ingeniería Verde y marco normativo">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Ingeniería Verde</span> Anastas y Zimmerman (2003) y la norma</p>
+    <h2 class="rise">Cuatro principios y dos normas respaldan la idea</h2>
+<div class="grid"><article class="card c1 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15M5 19c3-5 6-8 11-11"/></svg></span><h3>Principios aplicados</h3></header><ul><li><b>Prevenir</b> en vez de tratar los residuos.</li><li><b>Diseñar para la separación</b>, en el hogar y antes de mezclar.</li><li><b>Vida posterior comercial:</b> el material vuelve como materia prima.</li><li><b>Integrar flujos locales:</b> hogares, recuperadores, ECA y aliados.</li></ul></article><article class="card c2 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-6M12 16c-4 0-6-2.5-6-5 0-2 1.5-3.5 3-3.7C9 5 10.5 3 12 3s3 2 3 4.3c1.5.2 3 1.7 3 3.7 0 2.5-2 5-6 5z"/></svg></span><h3>Además</h3></header><ul><li>Economía circular: el residuo pasa a ser material.</li><li>Cambio de comportamiento: separar como hábito.</li><li>Uso eficiente de recursos ya producidos.</li></ul></article><article class="card c3 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4v10l-9 4-9-4zM3 7l9 4 9-4M12 11v10"/></svg></span><h3>Resolución 1407 de 2018</h3></header><ul><li>Los productores de envases deben presentar planes de gestión y cumplir metas de aprovechamiento (modificada por la Resolución 803 de 2024).</li><li>Un sistema que recupera y registra envases encaja con esa obligación.</li></ul></article><article class="card c1 rise"><header><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM3 20c0-3.5 2.7-6 6-6s6 2.5 6 6M16 11a3 3 0 1 0 0-6M17 14c2.5.5 4 2.7 4 6"/></svg></span><h3>Decreto 596 de 2016</h3></header><ul><li>Organiza el aprovechamiento y la formalización de los recuperadores de oficio.</li><li>Prevé un incentivo a la separación en la fuente para rutas con rechazo menor al 20 %.</li></ul></article></div>
+  </div>
+</section>
+
+<section class="s" data-name="Cierre" data-by="3" aria-label="Cierre">
+  <div class="in">
+    <p class="eyebrow rise"><span class="chip">Cierre</span> EcoPuntos en resumen</p>
+    <h2 class="rise">Reciclar en casa, cuidar a quien recoge y ahorrar en la factura</h2>
+<div class="flow" style="grid-template-columns:repeat(4,minmax(0,1fr))"><div class="step rise c1"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11l9-8 9 8M5 10v10h14V10M10 20v-6h4v6"/></svg></span><small>Hogares</small><h3>Separan y entregan al recuperador</h3><p>Con un día fijo por sector, como la basura.</p></div><div class="step rise c2"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-8-5-8-11a4.5 4.5 0 0 1 8-2.7A4.5 4.5 0 0 1 20 9c0 6-8 11-8 11z"/></svg></span><small>Recuperadores</small><h3>Recogen con reconocimiento</h3><p>Pago justo por ir casa a casa.</p></div><div class="step rise c3"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6"/></svg></span><small>Descuento</small><h3>Puntos que se vuelven ahorro</h3><p>Se refleja en la factura de servicios públicos.</p></div><div class="step rise c1"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22v-6M12 16c-4 0-6-2.5-6-5 0-2 1.5-3.5 3-3.7C9 5 10.5 3 12 3s3 2 3 4.3c1.5.2 3 1.7 3 3.7 0 2.5-2 5-6 5z"/></svg></span><small>Ciudad</small><h3>Menos residuos al relleno</h3><p>De 10,08 % a una meta de 15 % de aprovechamiento.</p></div></div>
+    <div class="banner rise"><span class="n"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19c0-8 5-14 15-14 0 10-6 15-14 15M5 19c3-5 6-8 11-11"/></svg></span><p>Gracias. ¿Preguntas?</p></div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <button class="nav" id="prev" type="button" aria-label="Diapositiva anterior">←</button>
+  <nav class="route" id="route" aria-label="Ruta de la presentación"></nav>
+  <span class="count" id="count" aria-hidden="true">1/9</span>
+  <button class="nav" id="next" type="button" aria-label="Diapositiva siguiente">→</button>
+</footer>
+
+<div class="scrim" id="scrim"></div>
+<aside class="panel" id="panel" role="dialog" aria-label="Glosario" inert>
+  <div class="ph"><h2>Glosario</h2><button class="btn" id="gclose" type="button">Cerrar <kbd>Esc</kbd></button></div>
+  <div class="sf"><input id="gq" type="search" placeholder="Buscar un término" aria-label="Buscar en el glosario" autocomplete="off"></div>
+  <dl class="gl" id="gl"></dl>
+</aside>
+
+<script>
+(function(){
+  var GL=[
+    ["Aprovechamiento","Recuperar residuos como papel, cartón, plástico o vidrio para que vuelvan a usarse como materia prima. La tasa mide qué parte de los residuos del servicio de aseo se aprovecha."],
+    ["Disposición final / relleno","Enterrar los residuos que no se aprovechan en un relleno sanitario. Cuando el relleno se llena, hay que abrir otro o ampliarlo."],
+    ["Separación en la fuente","Que el hogar aparte los residuos aprovechables de la basura común, antes de que se mezclen."],
+    ["Recuperadores de oficio","Personas que viven de recuperar material aprovechable. La norma (Decreto 596 de 2016) los llama «recicladores de oficio» y define su formalización."],
+    ["ECA","Estación de clasificación y aprovechamiento. Lugar donde se clasifica, pesa y prepara el material para venderlo. Medellín tiene 66 registradas."],
+    ["REP","Responsabilidad extendida del productor. Los productores de envases y empaques deben recuperar parte de lo que ponen en el mercado (Resolución 1407 de 2018)."],
+    ["Superservicios","Superintendencia de Servicios Públicos Domiciliarios. Publica las tasas de aprovechamiento y los informes de disposición final usados aquí."],
+    ["Rechazo","Parte del material entregado que no sirve por estar sucio o mezclado. El incentivo regulado de hasta el 4 % exige un rechazo menor al 20 %."],
+    ["Ecoins y Ecobot","Programas que ya existen: Ecoins da una moneda virtual por reciclables entregados; Ecobot son máquinas que reciben envases y entregan cupones."],
+    ["Emvarias","Empresas Varias de Medellín, que presta el servicio de aseo en la ciudad. Los medios la presentan como parte del Grupo EPM."]
+  ];
+
+  var $=function(i){return document.getElementById(i)};
+  var slides=[].slice.call(document.querySelectorAll('.s'));
+  var N=slides.length, cur=-1, timer=0;
+  var WHO=['','Andrés Martínez','Juan Sebastián Arango','Juan Carlos Herrera'];
+  var route=$('route'), count=$('count'), prev=$('prev'), next=$('next');
+
+  slides.forEach(function(s,i){
+    var b=document.createElement('button');
+    b.type='button';b.innerHTML='<i></i><span></span>';b.className='w'+s.getAttribute('data-by');
+    b.querySelector('span').textContent=s.getAttribute('data-name');
+    b.setAttribute('aria-label','Ir a '+s.getAttribute('data-name')+', diapositiva '+(i+1));
+    b.addEventListener('click',function(){goto(i)});
+    route.appendChild(b);
+  });
+  var rb=[].slice.call(route.children);
+
+  function show(n,animate){
+    n=Math.max(0,Math.min(N-1,n));
+    if(n===cur)return;
+    var old=cur>=0?slides[cur]:null, nu=slides[n];
+    clearTimeout(timer);
+    slides.forEach(function(s){ if(s!==old&&s!==nu){s.classList.remove('on','out','f','b')} });
+    if(old){old.classList.remove('on','f','b');old.classList.add('out')}
+    nu.classList.remove('out','f','b');
+    nu.scrollTop=0;
+    if(animate&&old){nu.classList.add(n>cur?'f':'b')}
+    nu.classList.add('on');
+    nu.setAttribute('aria-hidden','false');
+    if(old)old.setAttribute('aria-hidden','true');
+    if(old){timer=setTimeout(function(){old.classList.remove('out')},animate?850:0)}
+    cur=n;
+    rb.forEach(function(b,i){
+      b.classList.toggle('done',i<n);
+      b.classList.toggle('cur',i===n);
+      if(i===n)b.setAttribute('aria-current','step');else b.removeAttribute('aria-current');
+    });
+    var by=+nu.getAttribute('data-by');
+    $('who').textContent='Expone · '+WHO[by];$('who').className='who w'+by;
+    count.textContent=(n+1)+'/'+N;
+    prev.disabled=n===0;next.disabled=n===N-1;
+  }
+  function goto(i){ i=Math.max(0,Math.min(N-1,i)); if(String(i+1)===location.hash.slice(1)){show(i,true)} else {location.hash=String(i+1)} }
+  function fromHash(animate){
+    var n=parseInt(location.hash.slice(1),10);
+    if(!(n>=1&&n<=N))n=1;
+    show(n-1,animate);
+  }
+  window.addEventListener('hashchange',function(){fromHash(true)});
+  fromHash(false);
+
+  prev.addEventListener('click',function(){goto(cur-1)});
+  next.addEventListener('click',function(){goto(cur+1)});
+
+  /* teclado */
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey)return;
+    var typing=/^(INPUT|TEXTAREA)$/.test(e.target.tagName);
+    if(e.key==='Escape'){closeG();return}
+    if(typing)return;
+    if(e.key==='g'||e.key==='G'){e.preventDefault();panel.classList.contains('open')?closeG():openG();return}
+    if(panel.classList.contains('open'))return;
+    if(e.key==='ArrowRight'||e.key==='PageDown'||(e.key===' '&&e.target.tagName!=='BUTTON')){e.preventDefault();goto(cur+1)}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();goto(cur-1)}
+    else if(e.key==='Home'){goto(0)}
+    else if(e.key==='End'){goto(N-1)}
+  });
+
+  /* deslizar */
+  var sx=0,sy=0,stg=$('stage');
+  stg.addEventListener('touchstart',function(e){var t=e.changedTouches[0];sx=t.clientX;sy=t.clientY},{passive:true});
+  stg.addEventListener('touchend',function(e){
+    var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dy)<50&&!e.target.closest('.tw')){goto(cur+(dx<0?1:-1))}
+  },{passive:true});
+
+  /* glosario */
+  var panel=$('panel'),scrim=$('scrim'),gq=$('gq'),gl=$('gl'),lastFocus=null;
+  function norm(s){return s.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'')}
+  function render(q){
+    var k=norm(q||'').trim();
+    gl.textContent='';
+    var shown=0;
+    GL.forEach(function(g){
+      if(k&&norm(g[0]+' '+g[1]).indexOf(k)<0)return;
+      var d=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');
+      dt.textContent=g[0];dd.textContent=g[1];d.appendChild(dt);d.appendChild(dd);gl.appendChild(d);shown++;
+    });
+    if(!shown){var d=document.createElement('div');d.className='none';d.textContent='Ningún término coincide con la búsqueda.';gl.appendChild(d)}
+  }
+  function openG(term){
+    lastFocus=document.activeElement;
+    gq.value=term||'';render(term||'');
+    panel.inert=false;panel.classList.add('open');scrim.classList.add('open');
+    setTimeout(function(){gq.focus()},60);
+  }
+  function closeG(){
+    if(!panel.classList.contains('open'))return;
+    panel.classList.remove('open');scrim.classList.remove('open');panel.inert=true;
+    if(lastFocus&&lastFocus.focus)lastFocus.focus();
+  }
+  $('gbtn').addEventListener('click',function(){openG()});
+  $('gclose').addEventListener('click',closeG);
+  scrim.addEventListener('click',closeG);
+  gq.addEventListener('input',function(){render(gq.value)});
+  document.addEventListener('click',function(e){
+    var g=e.target.closest&&e.target.closest('.g');
+    if(g&&g.getAttribute('data-t')){e.preventDefault();openG(g.getAttribute('data-t'))}
+  });
+  render('');
+
+  /* tema: claro por defecto, con interruptor */
+  var R=document.documentElement,tb=$('tbtn');
+  function setTheme(t){
+    if(t==='dark')R.setAttribute('data-theme','dark');else R.removeAttribute('data-theme');
+    tb.textContent=t==='dark'?'Claro':'Oscuro';
+    tb.setAttribute('aria-pressed',t==='dark'?'true':'false');
+  }
+  try{setTheme(localStorage.getItem('ecopuntos-tema')==='dark'?'dark':'light')}catch(e){setTheme('light')}
+  tb.addEventListener('click',function(){
+    var t=R.getAttribute('data-theme')==='dark'?'light':'dark';
+    setTheme(t);
+    try{localStorage.setItem('ecopuntos-tema',t)}catch(e){}
+  });
+
+})();
+</script>
+
+</body>
+</html>
